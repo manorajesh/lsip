@@ -1,9 +1,20 @@
 [package]
 name = "lsip"
 version = "0.0.1"
+description = "list all IPs that are pingable"
+repository = "https://github.com/manorajesh/lsip"
+license-file = "LICENSE"
+keywords = ["list", "ips", "network"]
+categories = ["command-line-utilities"]
+readme = "README.md"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 rayon = "*"
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+debug = 0
