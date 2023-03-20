@@ -1,6 +1,6 @@
 [package]
 name = "lsip"
-version = "0.0.1"
+version = "0.0.2"
 description = "list all IPs that are pingable"
 repository = "https://github.com/manorajesh/lsip"
 license-file = "LICENSE"
@@ -13,6 +13,7 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "4.1.8", features = ["derive"] }
+mimalloc = { version = "0.1.34", default-features = false }
 rayon = "1.7.0"
 
 [profile.release]

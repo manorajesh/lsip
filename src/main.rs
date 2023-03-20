@@ -1,3 +1,6 @@
+#[global_allocator]
+static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
 use rayon::prelude::*;
 use std::{process::{Command, exit}, sync::{Arc, Mutex}};
 use clap::Parser;
@@ -41,6 +44,14 @@ fn main() {
     });
 
     output.lock().unwrap().sort_by(|a, _| {
+        if a.contains("is unreachable") {
+            std::cmp::Ordering::Greater
+        } else {
+            std::cmp::Ordering::Less
+        }
+    });
+
+    output.lock().unwrap().sort_by(|a, _| {
         if a.contains("is up") {
             std::cmp::Ordering::Greater
         } else {
@@ -76,13 +87,14 @@ fn ping(ip: String, timeout: usize) -> String {
         let ip = format!("{0:15}", ip);
         if let Some(time) = stdout.split("time").nth(1) {
             let time = time.split("ms").next().unwrap().replace("=", "");
+            let time = time.split(".").last().unwrap();
             let line = format!(
                 "{ip}is up \x1b[5;32m•\x1b[0m \x1b[38;5;8m({time}ms)\x1b[0m",
                 time = time
             );
             return line;
         } else {
-            let line = format!("{ip}is up \x1b[5;32m•\x1b[0m \x1b[37m(unknown ms)\x1b[0m"); // two spaces to line up
+            let line = format!("{ip}is unreachable \x1b[5;33m•\x1b[0m"); // two spaces to line up
             return line;
         }
     } else {
